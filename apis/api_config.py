@@ -17,4 +17,4 @@ from config import (
 )
 
 
-SEARCH_API_URL = f"{BASE_URL.rstrip('/')}/api/v1/search/"
+SEARCH_API_URL = f"{BASE_URL.rstrip('/')}/api/v1/via-project-token/search/"

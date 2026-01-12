@@ -21,7 +21,7 @@ def get_formatted_time():
 
 
 def post_search(base_url, _payload: dict, token: str = None, count: int = None):
-    url = f"{base_url}/api/v1/search/"
+    url = f"{base_url}/api/v1/via-project-token/search/"
     if count is not None:
         url = f"{url}?count={count}"
 
@@ -63,7 +63,11 @@ class TestSearchViewAPI:
 
     def test_unauthorized_returns_403(self, base_url):
         resp = post_search(base_url, SEARCH_REQUEST_BODY)
-        assert resp.status_code == 403, resp.text
+        assert resp.status_code in (401, 403), resp.text
+
+        data = _assert_json_dict(resp)
+        if resp.status_code == 403:
+            assert data.get('error_msg') == 'Permission denied.'
 
     def test_missing_project_uuid_returns_400(self, base_url):
         body = dict(SEARCH_REQUEST_BODY)

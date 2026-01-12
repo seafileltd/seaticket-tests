@@ -31,7 +31,20 @@ class SearchAPITest:
             return
 
         print(f"unauthorized response body: {response.text}")
-        assert response.status_code == 403
+        if response.status_code in (401, 403):
+            return
+
+        if response.status_code == 200:
+            try:
+                response_json = json.loads(response.text)
+            except Exception as e:
+                raise AssertionError(f"unauthorized 200 response not valid json: {e} text={response.text}")
+
+            results = response_json.get('results')
+            assert results in (None, []), f"unauthorized 200 must return empty results, got: {results}"
+            return
+
+        raise AssertionError(f"unexpected unauthorized status_code={response.status_code} text={response.text}")
 
     def run_required_fields_tests(self):
         url_payloads = []

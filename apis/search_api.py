@@ -19,7 +19,6 @@ def post_search(payload: dict, token: str = AUTH_TOKEN_KEY, count: int = None):
     }
     if token:
         headers['authorization'] = f"Bearer {token}"
-
     formatted_time = get_formatted_time()
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=REQUEST_TIMEOUT)
