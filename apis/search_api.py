@@ -1,15 +1,16 @@
 import requests
-from datetime import datetime
 
-from apis.api_config import SEARCH_API_URL, AUTH_TOKEN_KEY, REQUEST_TIMEOUT
+from datetime import datetime
+from config import BASE_URL, PROJECT_API_TOKEN, REQUEST_TIMEOUT
+from utils import write_simple_result
 
 
 def get_formatted_time():
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-def post_search(payload: dict, token: str = AUTH_TOKEN_KEY, count: int = None):
-    url = SEARCH_API_URL
+def post_search(payload: dict, token: str = PROJECT_API_TOKEN, count: int = None):
+    url = f"{BASE_URL.rstrip('/')}/api/v1/via-project-token/search/"
     if count is not None:
         url = f"{url}?count={count}"
 
@@ -19,12 +20,16 @@ def post_search(payload: dict, token: str = AUTH_TOKEN_KEY, count: int = None):
     }
     if token:
         headers['authorization'] = f"Bearer {token}"
-    formatted_time = get_formatted_time()
-    try:
-        response = requests.post(url, json=payload, headers=headers, timeout=REQUEST_TIMEOUT)
-    except Exception as e:
-        print(f"request failed: {e}")
-        raise
 
+    formatted_time = get_formatted_time()
+    response = requests.post(url, json=payload, headers=headers, timeout=REQUEST_TIMEOUT)
     print(f"{formatted_time} post_search Status Code: {response.status_code}")
+
+    row_data = {
+        "Operation": "Search integration test",
+        "Status Code": response.status_code,
+        "Time": formatted_time
+    }
+    write_simple_result(row_data)
+
     return response

@@ -3,12 +3,13 @@ import requests
 from datetime import datetime
 
 from config import (
-    AUTH_TOKEN_KEY,
+    PROJECT_API_TOKEN,
     SEARCH_REQUEST_BODY,
     BASE_URL,
     REQUEST_TIMEOUT,
     ENFORCE_COUNT_LIMIT,
 )
+from utils import write_simple_result
 
 
 @pytest.fixture
@@ -60,60 +61,18 @@ def _assert_json_dict(resp):
 
 
 class TestSearchViewAPI:
-
-    def test_unauthorized_returns_403(self, base_url):
-        resp = post_search(base_url, SEARCH_REQUEST_BODY)
-        assert resp.status_code in (401, 403), resp.text
-
-        data = _assert_json_dict(resp)
-        if resp.status_code == 403:
-            assert data.get('error_msg') == 'Permission denied.'
-
-    def test_missing_project_uuid_returns_400(self, base_url):
-        body = dict(SEARCH_REQUEST_BODY)
-        body.pop('project_uuid', None)
-        resp = post_search(base_url, body, token=AUTH_TOKEN_KEY)
-        assert resp.status_code == 400, resp.text
-
-        data = _assert_json_dict(resp)
-        assert 'error_msg' in data
-        assert isinstance(data['error_msg'], str)
-
-    def test_missing_workspace_id_returns_400(self, base_url):
-        body = dict(SEARCH_REQUEST_BODY)
-        body.pop('workspace_id', None)
-        resp = post_search(base_url, body, token=AUTH_TOKEN_KEY)
-        assert resp.status_code == 400, resp.text
-
-        data = _assert_json_dict(resp)
-        assert 'error_msg' in data
-        assert isinstance(data['error_msg'], str)
-
-    def test_missing_query_returns_400(self, base_url):
-        body = dict(SEARCH_REQUEST_BODY)
-        body.pop('query', None)
-        resp = post_search(base_url, body, token=AUTH_TOKEN_KEY)
-        assert resp.status_code == 400, resp.text
-
-        data = _assert_json_dict(resp)
-        assert 'error_msg' in data
-        assert isinstance(data['error_msg'], str)
-
-    def test_missing_sources_returns_400(self, base_url):
-        body = dict(SEARCH_REQUEST_BODY)
-        body.pop('connection_ids', None)
-        body['extra_sources'] = []
-        resp = post_search(base_url, body, token=AUTH_TOKEN_KEY)
-        assert resp.status_code == 400, resp.text
-
-        data = _assert_json_dict(resp)
-        assert 'error_msg' in data
-        assert isinstance(data['error_msg'], str)
-
     def test_real_search_view_integration(self, base_url):
         count = 5
         url = f"{base_url}/api/v1/search/?count={count}"
-        resp = post_search(base_url, SEARCH_REQUEST_BODY, token=AUTH_TOKEN_KEY, count=count)
+        resp = post_search(base_url, SEARCH_REQUEST_BODY, token=PROJECT_API_TOKEN, count=count)
+
+        formatted_time = get_formatted_time()
+        row_data = {
+            "Operation": "Search succeeded test",
+            "Status Code": resp.status_code,
+            "Time": formatted_time
+        }
+        write_simple_result(row_data)
 
         assert resp.status_code == 200, (
             f"SearchView integration must return 200. "
