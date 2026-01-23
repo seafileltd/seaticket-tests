@@ -1,18 +1,7 @@
 import json
-import sys
-import os
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-
-from config import (
-    PROJECT_UUID,
-    WORKSPACE_ID,
-    SEARCH_REQUEST_BODY,
-    ENFORCE_COUNT_LIMIT,
-)
 
 from apis.search_api import post_search
+from config import PROJECT_UUID, WORKSPACE_ID, SEARCH_REQUEST_BODY, PROJECT_API_TOKEN, ENFORCE_COUNT_LIMIT
 
 
 class SearchAPITest:
@@ -22,7 +11,7 @@ class SearchAPITest:
 
     def run_search_success_test(self):
         try:
-            response = post_search(SEARCH_REQUEST_BODY, count=self.count)
+            response = post_search(SEARCH_REQUEST_BODY, PROJECT_API_TOKEN, count=self.count)
         except Exception as e:
             print(f"Error in run_search_success_test: {e}")
             return

@@ -1,14 +1,18 @@
 import os
+import re
 import sys
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 from seatable_api import context
-from local_settings import SEATABLE_API_TOKEN, PROJECT_API_TOKEN
 
+
+PROJECT_API_TOKEN = ''
+SEATABLE_API_TOKEN = ''
 PROJECT_UUID = ''
 WORKSPACE_ID = ''
 CONNECTION_IDS = ''
+
 
 # Base URL for tests (requires a running server).
 BASE_URL = 'http://127.0.0.1:8000'
@@ -31,3 +35,30 @@ SEARCH_REQUEST_BODY = {
     'extra_sources': ['knowledge_base', 'ticket'],
     'search_type': 'normal_search',
 }
+
+
+def load_local_settings(module):
+    '''Import any symbols that begin with A-Z. Append to lists any symbols
+    that begin with "EXTRA_".
+    '''
+    for attr in dir(module):
+        match = re.search(r'^EXTRA_(\w+)', attr)
+        if match:
+            name = match.group(1)
+            value = getattr(module, attr)
+            try:
+                globals()[name] += value
+            except KeyError:
+                globals()[name] = value
+        elif re.search(r'^[A-Z]', attr):
+            globals()[attr] = getattr(module, attr)
+
+
+# Load local_settings.py
+try:
+    import local_settings
+except ImportError:
+    pass
+else:
+    load_local_settings(local_settings)
+    del local_settings

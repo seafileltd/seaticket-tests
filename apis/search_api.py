@@ -1,15 +1,10 @@
 import requests
 
-from datetime import datetime
-from config import BASE_URL, PROJECT_API_TOKEN, REQUEST_TIMEOUT
-from utils import write_simple_result
+from config import BASE_URL, REQUEST_TIMEOUT
+from utils import write_simple_result, get_formatted_time
 
 
-def get_formatted_time():
-    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-
-def post_search(payload: dict, token: str = PROJECT_API_TOKEN, count: int = None):
+def post_search(payload: dict, token: str , count: int = None):
     url = f"{BASE_URL.rstrip('/')}/api/v1/via-project-token/search/"
     if count is not None:
         url = f"{url}?count={count}"

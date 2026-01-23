@@ -1,15 +1,8 @@
 import pytest
 import requests
-from datetime import datetime
 
-from config import (
-    PROJECT_API_TOKEN,
-    SEARCH_REQUEST_BODY,
-    BASE_URL,
-    REQUEST_TIMEOUT,
-    ENFORCE_COUNT_LIMIT,
-)
-from utils import write_simple_result
+from utils import write_simple_result, get_formatted_time
+from config import PROJECT_API_TOKEN, SEARCH_REQUEST_BODY, BASE_URL, REQUEST_TIMEOUT, ENFORCE_COUNT_LIMIT
 
 
 @pytest.fixture
@@ -17,16 +10,11 @@ def base_url():
     return f"{BASE_URL.rstrip('/')}"
 
 
-def get_formatted_time():
-    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-
-def post_search(base_url, _payload: dict, token: str = None, count: int = None):
+def post_search(base_url, payload: dict, token: str = None, count: int = None):
     url = f"{base_url}/api/v1/via-project-token/search/"
     if count is not None:
         url = f"{url}?count={count}"
 
-    payload = _payload
     headers = {
         'accept': 'application/json',
         'content-type': 'application/json',
@@ -44,15 +32,11 @@ def post_search(base_url, _payload: dict, token: str = None, count: int = None):
     return response
 
 
-def _safe_json(resp):
-    try:
-        return resp.json()
-    except Exception:
-        return None
-
-
 def _assert_json_dict(resp):
-    data = _safe_json(resp)
+    try:
+        data =  resp.json()
+    except Exception:
+        data =  None
     assert isinstance(data, dict), (
         f"Response is not JSON object. "
         f"status={resp.status_code} content_type={resp.headers.get('Content-Type')} text={resp.text}"
