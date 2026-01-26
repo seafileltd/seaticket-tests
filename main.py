@@ -1,7 +1,7 @@
 import json
 
 from apis.search_api import post_search
-from config import PROJECT_UUID, WORKSPACE_ID, SEARCH_REQUEST_BODY, PROJECT_API_TOKEN, ENFORCE_COUNT_LIMIT
+from config import SEARCH_REQUEST_BODY, PROJECT_API_TOKEN, ENFORCE_COUNT_LIMIT
 
 
 class SearchAPITest:
@@ -32,8 +32,6 @@ class SearchAPITest:
 
     def run_print_config(self):
         print("\n========== Search integration config ==========")
-        print(f"project_uuid={PROJECT_UUID}")
-        print(f"workspace_id={WORKSPACE_ID}")
 
 
 def main():

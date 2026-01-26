@@ -9,10 +9,16 @@ from seatable_api import context
 
 PROJECT_API_TOKEN = ''
 SEATABLE_API_TOKEN = ''
-PROJECT_UUID = ''
-WORKSPACE_ID = ''
+QUERY_KEYWORD = ''
+EXT_SOURCES = []
+TIME_FROM = None
+TIME_TO = None
+
+# connection_ids example:'connection_ids': '1,2,3'
 CONNECTION_IDS = ''
 
+# search_type:'normal_search' or 'semantic_search'
+SEARCH_TYPE = ''
 
 # Base URL for tests (requires a running server).
 BASE_URL = 'http://127.0.0.1:8000'
@@ -23,18 +29,6 @@ SEATABLE_SERVER_URL = context.server_url or 'https://dev.seatable.cn'
 # In real environments the backend may not strictly enforce the `count` query param.
 # Turn this on only if the deployed search service guarantees `len(results) <= count`.
 ENFORCE_COUNT_LIMIT = False
-
-# Request body for SearchView integration test
-# connection_ids example:'connection_ids': '1,2,3'
-# search_type:'normal_search' or 'semantic_search'
-SEARCH_REQUEST_BODY = {
-    'query': 'Seafile',
-    'project_uuid': PROJECT_UUID,
-    'workspace_id': str(WORKSPACE_ID),
-    'connection_ids': str(CONNECTION_IDS),
-    'extra_sources': ['knowledge_base', 'ticket'],
-    'search_type': 'normal_search',
-}
 
 
 def load_local_settings(module):
@@ -62,3 +56,14 @@ except ImportError:
 else:
     load_local_settings(local_settings)
     del local_settings
+
+
+# Request body for SearchView integration test
+SEARCH_REQUEST_BODY = {
+    'query': QUERY_KEYWORD,
+    'connection_ids': CONNECTION_IDS,
+    'extra_sources': EXT_SOURCES,
+    'search_type': SEARCH_TYPE,
+    'time_from': TIME_FROM,
+    'time_to':TIME_TO,
+}
