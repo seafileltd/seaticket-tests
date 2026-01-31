@@ -5,6 +5,7 @@ from utils import write_simple_result, get_formatted_time
 
 
 def post_search(payload: dict, token: str , count: int = None):
+    search_type = payload['search_type']
     url = f"{BASE_URL.rstrip('/')}/api/v1/via-project-token/search/"
     if count is not None:
         url = f"{url}?count={count}"
@@ -21,7 +22,7 @@ def post_search(payload: dict, token: str , count: int = None):
     print(f"{formatted_time} post_search Status Code: {response.status_code}")
 
     row_data = {
-        "Operation": "Search integration test",
+        "Operation": f"{search_type}",
         "Status Code": response.status_code,
         "Time": formatted_time
     }

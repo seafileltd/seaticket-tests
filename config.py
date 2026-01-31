@@ -17,14 +17,11 @@ TIME_TO = None
 # connection_ids example:'connection_ids': '1,2,3'
 CONNECTION_IDS = ''
 
-# search_type:'normal_search' or 'semantic_search'
-SEARCH_TYPE = ''
-
 # Base URL for tests (requires a running server).
 BASE_URL = 'http://127.0.0.1:8000'
 REQUEST_TIMEOUT = 30
 
-SEATABLE_TABLE_NAME = 'SeaTicket tests'
+SEATABLE_TABLE_NAME = ''
 SEATABLE_SERVER_URL = context.server_url or 'https://dev.seatable.cn'
 # In real environments the backend may not strictly enforce the `count` query param.
 # Turn this on only if the deployed search service guarantees `len(results) <= count`.
@@ -63,7 +60,6 @@ SEARCH_REQUEST_BODY = {
     'query': QUERY_KEYWORD,
     'connection_ids': CONNECTION_IDS,
     'extra_sources': EXT_SOURCES,
-    'search_type': SEARCH_TYPE,
     'time_from': TIME_FROM,
     'time_to':TIME_TO,
 }
